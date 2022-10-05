@@ -1,0 +1,43 @@
+
+
+
+### Essential commands
+
+```shell
+
+# Logs from unit - since - until
+journalctl -u sshd --since "2022-06-26 23:15:00" --until "2022-07-26 23:20:00"
+
+# boot messages
+journalctl -b
+journalctl -b -1
+journalctl --list-boots
+
+# by units
+journalctl -u nginx.service -u mysql.service
+
+# by user
+id mysql
+journalctl _UID=108
+
+# output formats
+journalctl -b -u nginx -o json-pretty
+
+```
+
+The following formats can be used for display:
+
+-   **cat**: Displays only the message field itself.
+-   **export**: A binary format suitable for transferring or backing up.
+-   **json**: Standard JSON with one entry per line.
+-   **json-pretty**: JSON formatted for better human-readability
+-   **json-sse**: JSON formatted output wrapped to make add server-sent event compatible
+-   **short**: The default `syslog` style output
+-   **short-iso**: The default format augmented to show ISO 8601 wallclock timestamps.
+-   **short-monotonic**: The default format with monotonic timestamps.
+-   **short-precise**: The default format with microsecond precision
+-   **verbose**: Shows every journal field available for the entry, including those usually hidden internally.
+
+
+---
+ref: https://www.digitalocean.com/community/tutorials/how-to-use-journalctl-to-view-and-manipulate-systemd-logs

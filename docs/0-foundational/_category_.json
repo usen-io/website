@@ -1,0 +1,8 @@
+{
+  "label": "Layer 0 - Foundational",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Foundational components"
+  }
+}
