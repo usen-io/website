@@ -10,9 +10,12 @@ Taking advantage of documentation with moder solution
 
 ## Deploying Docusaurus
 
-> This exercise aims to deploy docusaurus with GitHub Pages and Typesense as search engine.
+> This guide aims to deploy docusaurus with GitHub Pages and Typesense as search engine.
 
-- Generic values that you need change
+
+### Generic
+
+- This guide asume the following cross data
 ```
 website: usen.io
 github entity: usen-io
@@ -21,7 +24,9 @@ github repo: website
 
 ### Remote acctions
 
-- pre-requisits:
+#### From Typesense
+- Generate these **four** values following the [Typesense](https://usen.io/foundational/srvcs/typesense) guide
+
 ```shell
 TYPESENSE_SCRAPER_API_KEY
 example: z3diTzyuQRnBzPbVi2TVp3XKcVfM3Cjv
@@ -36,6 +41,8 @@ TYPESENSE_COLLECTION_NAME
 example: usen-doc
 ```
 
+#### From Github
+
 - GitHub Repo > Settings > Security > Secrets > Actions
 	- Add a github secret for typesense scraper API key:  TYPESENSE_SCRAPER_API_KEY
 	- Add a github secret for typesense  instance URL: TYPESENSE_INSTANCE_URL_01
@@ -45,20 +52,16 @@ example: usen-doc
 	- GitHub Repo > Settings > Build and deployment > Deploy from a branch > gh-pages
 	- Add custom domain: awesome.web
 
-- DNS provider setup
+#### From the DNS provider
+- DNS provider setup the following records:
 	- CNAME www usen-io.github.io
 	- CNAME @ usen-io.github.io
 
+
 ## Local actions
 
-- **GENERIC**: values that you need change
-```
-website: usen.io
-github entity: usen-io
-github repo: website
-```
-
 - **FETCH:** pre-requisits:
+
 ```shell
 asdf install nodejs 18.10.0 
 asdf global nodejs 18.10.0
@@ -66,6 +69,7 @@ npm install -g yarn
 ```
 
 - **INSTALL:** Docusarus base template:
+
 ```shell
 npx create-docusaurus@latest website classic
 cd website
@@ -74,7 +78,8 @@ yarn install
 mkdir -p .github/workflows/
 ```
 
-- **CREATE** :
+- **CREATE**  gh action pipeline for build and deploy:
+
 ```yml title=".github/workflows/deploy.yml"
 name: Deploy to GitHub Pages
 
@@ -117,7 +122,8 @@ jobs:
 
 ```
 
-- **CREATE:**
+- **CREATE** gh action pipeline for scrape and push info to Typesense instance.
+
 ```yml title=".github/workflows/typesense.yml"
 name: Rebuild Search Index
 
@@ -203,6 +209,7 @@ jobs:
 ```
 
 - **EDIT**:
+
 ```js title="docusaurus.config.js"
 
 url: 'https://your-docusaurus-test-site.com',
@@ -242,13 +249,17 @@ git remote add github git@aa-github:usen-io/website.git
 git push github main
 ```
 
+> now return to github remote acction and finish these steps.
+> ~~ happy codign ~~
+
 - **TEST** locally
 ```shell
 yarn start
 ```
 
+---
 
-## Formationg the content
+## Formating Content
 #### Sidebar
 
 >The `label`, `className`, and `customProps` attributes are declared in front matter as `sidebar_label`, `sidebar_class_name`, and `sidebar_custom_props`, respectively. Position can be specified in the same way, via `sidebar_position` front matter.
@@ -265,4 +276,3 @@ tags:
   - Demo
   - Getting started
 ```
-
