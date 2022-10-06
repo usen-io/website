@@ -145,7 +145,7 @@ const config = {
         //    ],
         //  },
         ],
-        copyright: `KISS |•~| ${new Date().getFullYear()}.`,
+        copyright: `KISS [•~] ${new Date().getFullYear()}.`,
       },
       prism: {
         theme: lightCodeTheme,
