@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[2829],{1980:i=>{i.exports=JSON.parse('{"label":"partial","permalink":"/tags/partial","allTagsPath":"/tags","count":1,"items":[{"id":"provisioning/container-registry/harbor","title":"harbor","description":"Vulnerability Scanning","permalink":"/provisioning/container-registry/harbor"}]}')}}]);

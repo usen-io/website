@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[6645],{6922:i=>{i.exports=JSON.parse('{"label":"linux","permalink":"/tags/linux","allTagsPath":"/tags","count":1,"items":[{"id":"skill-ignition/generics/unix/bash","title":"Bash","description":"Getting started {.cols-3}","permalink":"/skill-ignition/generics/unix/bash"}]}')}}]);
