@@ -1,8 +1,0 @@
-{
-  "label": "Layer 4 - Strategy",
-  "position": 4,
-  "link": {
-    "type": "generated-index",
-    "description": "App definition and development components"
-  }
-}

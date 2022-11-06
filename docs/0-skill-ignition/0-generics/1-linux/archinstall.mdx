@@ -1,0 +1,62 @@
+
+
+### essential
+```shell
+# refresh the iso data
+pacman -Syyyy
+```
+
+### packages
+
+```shell
+networkmanager vim openssh
+```
+
+### configs
+
+```shell
+systemctl enable --now NetworkManager
+systemctl enable --now sshd
+
+# ssh teaks 
+PermitRootLogin yes
+```
+
+
+### install on arm 
+```
+pacman -Syyy
+pacman -S archlinux-keyring archinstall python3 --noconfirm
+pacman -Syu --noconfirm
+archinstall
+```
+
+
+### tiling windows manager
+
+
+```shell
+pacman -S --noconfirm git
+
+# ------------------- ulauncher
+cd /tmp
+git clone https://aur.archlinux.org/ulauncher.git && cd ulauncher && makepkg -is --noconfirm
+```
+
+
+
+
+```
+cd M1-ARM-ARCHLINUX/
+
+./1_BaseSetup_System.sh
+
+./2_BaseSetup_User.sh
+
+su -c ./3_BaseSetup_Tiling.sh aa
+
+su -c ./4_BaseSetup_Terminal.sh aa
+```
+
+#### macOS UTM
+

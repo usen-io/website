@@ -1,0 +1,29 @@
+
+
+### connect
+
+```shell
+virsh -c qemu+tcp://localhost:16599/system
+```
+
+
+#### retriving info
+```shell
+dominfo <VM name>
+```
+
+#### manage memory
+
+```shell
+# In MB
+sudo virsh setmaxmem test 2048 --config
+sudo virsh setmem test 2048 --config
+sudo virsh shutdown test
+sudo virsh start test
+
+# Same in GB
+sudo virsh setmaxmem test 16G --config
+sudo virsh setmem test 16G --config
+sudo virsh shutdown test
+sudo virsh start test
+```

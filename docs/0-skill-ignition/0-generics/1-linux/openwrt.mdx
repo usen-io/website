@@ -1,0 +1,188 @@
+## Install
+
+### Download from 
+https://firmware-selector.openwrt.org/
+https://openwrt.org/toh/raspberry_pi_foundation/raspberry_pi
+
+#### Download and extract
+
+```sh
+curl -Lo /tmp/openwrt.img.gz \
+https://downloads.openwrt.org/releases/22.03.2/targets/bcm27xx/bcm2711/openwrt-22.03.2-bcm27xx-bcm2711-rpi-4-ext4-factory.img.gz
+
+gunzip /tmp/openwrt.img.gz
+
+```
+
+#### Burn
+
+```sh
+sudo dd if=/tmp/openwrt.img of=/dev/sdX bs=2M conv=fsync
+sync
+sudo gparted
+```
+
+
+### Temp wifi setup
+
+> go to your 192.168.1.1 and setup a wireless acces
+
+
+### Get config files
+
+```
+git clone https://github.com/usen-io/openwrt-rpi.git
+
+ssh root@192.168.1.1 opkg update
+ssh root@192.168.1.1 opkg install git git-http
+
+ssh root@192.168.1.1 'git clone https://github.com/usen-io/openwrt-rpi.git /root/openwrt-rpi'
+
+# ignition
+ssh root@192.168.1.1 /root/openwrt-rpi/ignition.sh
+
+# place keys
+ssh-keygen -y -f ~/.ssh/<key> | ssh root@192.168.1.1 tee /etc/dropbear/authorized_keys
+
+# place config files
+scp etc-config/* root@192.168.1.1:/etc/config
+
+ssh root@192.168.1.1 '/root/openwrt-rpi/customize.sh aa 2486ya5pXpK5CtHwe5FZSIW0ybibZbSEY 5LaLvSiiRFzj7uBmGX1yIxEFVKMiCtsU8 openwrt-rpi'
+
+nmcli con down ''
+nmcli con up ''
+
+ssh root@10.10.10.1
+
+```
+
+
+
+### Customize
+
+```sh
+
+#!/bin/sh
+
+# -------- USAGE 
+# -------- ./customize.sh <username> <userpass> <rootpass> <hostname>
+
+USERNAME=$1
+USERPASS=$2
+ROOTPASS=$3
+HOSTNAME=$4
+
+# change root password
+
+printf "${ROOTPASS}\n${ROOTPASS}\n" | passwd root
+
+# -------- create a regular user
+
+useradd -s /bin/ash -N -m ${USERNAME}
+
+printf "${USERPASS}\n${USERPASS}\n" | passwd ${USERNAME}
+
+echo '%users ALL=(ALL) NOPASSWD: ALL' |EDITOR=/usr/bin/tee visudo
+
+mkdir /home/$USERNAME/.ssh && cd /home/$USERNAME/.ssh
+
+cp /etc/dropbear/authorized_keys . && chown ${USERNAME}: *
+
+# -------- disable ssh root login
+
+uci set dropbear.@dropbear[0].PasswordAuth="off"
+uci set dropbear.@dropbear[0].RootPasswordAuth="off"
+uci set dropbear.@dropbear[0].RootLogin="on"
+uci commit dropbear
+service dropbear restart
+
+# -------- set the system hostname
+
+uci set system.@system[0].hostname=${HOSTNAME}
+uci commit
+
+# -------- reboot
+reboot
+```
+
+
+
+
+```
+#  Packages
+
+# confirm internet access
+ping -c 3 google.com
+
+#update piackage list
+opkg update
+
+# install essentials
+opkg install luci-ssl openssh-sftp-server htop vim-full tree diffutils usbutils fdisk sudo shadow-useradd block-mount
+
+# install wireguard packages
+opkg install luci-app-wireguard luci-proto-wireguard
+
+# install external interface drivers
+opkg install kmod-mt76x2u
+
+
+```
+
+
+---
+ref: https://www.itix.fr/blog/install-openwrt-raspberry-pi/
+ref: https://github.com/mikenizo808/How-To-Install-openwrt-on-Raspberry-Pi
+
+
+
+### Install Wireguard Packages
+
+> Navigate to **LuCI → System → Software** and install the packages [luci-proto-wireguard](https://openwrt.org/packages/pkgdata/luci-proto-wireguard "packages:pkgdata:luci-proto-wireguard") and [luci-app-wireguard](https://openwrt.org/packages/pkgdata/luci-app-wireguard "packages:pkgdata:luci-app-wireguard") to manage WireGuard using LuCI.
+
+## VPN
+
+###  Comparations
+
+```
+BusyBox v1.33.2 (2022-04-16 12:59:34 UTC) built-in shell (ash)
+
+  _______                     ________        __
+ |       |.-----.-----.-----.|  |  |  |.----.|  |_
+ |   -   ||  _  |  -__|     ||  |  |  ||   _||   _|
+ |_______||   __|_____|__|__||________||__|  |____|
+          |__| W I R E L E S S   F R E E D O M
+ -----------------------------------------------------
+ OpenWrt 21.02.3, r16554-1d4dea6d4f
+ -----------------------------------------------------
+
+Wifi - WAN
+  4: wlan1    inet 192.168.43.242/24
+  4: wlan1    inet6 fe80::e65f:1ff:fe96:7e9a/64
+
+Alfa - LAN
+  5: br-lan    inet 10.1.2.1/24 brd 10.1.2.255
+  5: br-lan    inet6 fd22:1291:e36e::1/60
+  5: br-lan    inet6 fe80::e65f:1ff:fe96:7e99/64
+
+Ethernet - WAN
+  6: wlan0    inet6 fe80::2c0:caff:feb0:62a8/64
+
+VPN - Openvpn
+  7: tun0    inet 10.0.33.3/29
+  7: tun0    inet6 fe80::50a1:2352:b4b4:149a/64
+```
+
+
+> OpenVPN
+
+![](Screen%20Shot%202022-11-02%20at%201.45.20%20PM.png)
+
+
+
+> Wireguard
+
+![](Screen%20Shot%202022-11-02%20at%206.31.35%20PM.png)
+
+
+

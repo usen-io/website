@@ -1,0 +1,18 @@
+### connect with fixed IP
+
+```shell
+# create a static ip that auto connect when the sistem start up.
+
+nmcli con add con-name eth0 ifname eth0 type ethernet ipv4.address 192.168.1.250/24 ipv4.dns 192.168.1.1 ipv4.gateway 192.168.1.1 connection.method manual
+```
+
+
+### connect to wireless network
+
+```shell
+# retrieve the access point
+nmcli dev wifi list
+
+# connecto to
+nmcli dev wifi connect <SSID> password <PASSWORD>
+```

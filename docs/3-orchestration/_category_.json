@@ -1,8 +1,0 @@
-{
-  "label": "Layer 3 - Orchestration",
-  "position": 3,
-  "link": {
-    "type": "generated-index",
-    "description": "Orchestration and Management components"
-  }
-}

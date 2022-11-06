@@ -1,8 +1,0 @@
-{
-  "label": "Layer 2 - Runtime",
-  "position": 2,
-  "link": {
-    "type": "generated-index",
-    "description": "Runtime and Engines components"
-  }
-}

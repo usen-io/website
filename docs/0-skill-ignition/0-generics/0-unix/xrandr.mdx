@@ -1,0 +1,30 @@
+
+> Custom screen resolution on any Linux device
+
+
+```
+xrandr
+
+
+xrandr --output eDP-1 --mode 1400x810
+
+xrandr --output Virtual-1 --mode 3840x2160
+
+## LG ultrawide 
+xrandr --output Virtual-1 --mode 2560x1080
+
+cvt 1300 649
+
+xrandr --newmode "1304x649_60.00"   67.50  1304 1360 1488 1672  649 652 662 675 -hsync +vsync
+
+xrandr --addmode eDP-1 "1304x649_60.00"
+
+```
+
+
+
+---
+
+ref: https://www.linuxfordevices.com/tutorials/linux/change-screen-resolution
+
+

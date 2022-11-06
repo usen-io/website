@@ -1,0 +1,107 @@
+
+
+### Autostart Podman Containers
+
+#### single service autostart
+
+```shell
+# retrive the name of the container
+podman ps -a
+
+# prepare local user systemd path
+mkdir -p ~/.config/systemd/user/
+
+# generate the systemd unit
+podman generate systemd --new --name cloudflare-ddns > ~/.config/systemd/user/container-cf-ddns.service
+
+# from systemctl
+systemctl --user daemon-reload
+systemctl --user list-unit-files
+systemctl --user enable --now container-cf-ddns.service
+systemctl --user status container-cf-ddns.service
+
+# enable lingering 
+loginctl enable-linger rocky
+
+# list of lingering users
+ls /var/lib/systemd/linger
+```
+
+
+#### Multi service autostart
+
+> the systemd unit that manage the service
+
+```bash
+[Unit]
+Description=netboxmonit
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=forking
+RestartSec=30
+Restart=always
+TimeoutStartSec=0
+RemainAfterExit=true
+ExecStart=/usr/bin/bash /home/rocky/.local/bin/netboxmonit
+
+[Install]
+WantedBy=default.target
+```
+
+
+
+> The script that check the pods status
+
+```bash
+#!/bin/bash
+
+REGISTRY_LOG=/home/rocky/netboxmonit.log
+COMPOSE_FILE=container-compose.yml
+COMPOSE_PATH=/home/rocky/dpl/netbox.usen.io/co
+
+restart_compose(){
+
+  echo "$(date) [INFO] Restarting podman-compose registry service.." >> $REGISTRY_LOG
+
+  cd $COMPOSE_PATH && podman-compose -f $COMPOSE_FILE stop
+  sleep 10
+  cd $COMPOSE_PATH && podman-compose -f $COMPOSE_FILE start
+  rc=$?
+
+  sleep 10
+  containers_up=$(podman ps | grep -c "netbox")
+
+  if [ $rc -ne 0 ] || [ ${containers_up} -ne 1 ]; then
+    echo "$(date) [ERROR] Restarting netbox services" >> $REGISTRY_LOG
+    return 1
+  else
+    echo "$(date) [INFO] Restarted netbox services" >> $REGISTRY_LOG
+  fi
+
+  return 0
+}
+
+is_container_compose_ok(){
+  containers=$( podman ps -a --filter label=com.docker.compose.project.working_dir=/home/rocky/dpl/netbox.usen.io/co | grep -c "Up ")
+
+  if [ ${containers} -eq 6 ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+while [ 0 ]; do
+  is_container_compose_ok
+  rc=$?
+  if [ $rc -ne 0 ]; then
+    restart_compose
+  fi
+
+  sleep 10
+done
+```
+
+

@@ -1,0 +1,19 @@
+
+
+### Errase
+
+dd if=/dev/zero of=/dev/sdb bs=250M status=progress && sync
+dd if=/dev/zero of=/dev/sdb bs=16M status=progress && sync
+
+### Creating a file with content
+
+```sh
+sudo dd of=foo.conf << EOF
+<VirtualHost *:80>
+  ServerName localhost
+  DocumentRoot /var/www/localhost
+</VirtualHost>
+EOF
+```
+
+

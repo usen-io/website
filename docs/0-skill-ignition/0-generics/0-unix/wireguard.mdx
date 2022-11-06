@@ -1,0 +1,45 @@
+
+### essential commands
+
+```shell
+# generate keys
+
+wg genkey | tee privatekey | wg pubkey > publickey
+
+# path for config file
+/etc/wireguard/wg0.conf
+
+# stat a conneciton
+
+sudo wg-quick up wg0
+
+# get conneciton info
+sudo wg
+
+# close the conneciton
+sudo wg-quick up wg0
+```
+
+
+##### example config file
+
+```shell
+[Interface]
+Address = <client-ip-address>/<subnet>
+ListenPort = <port>
+PrivateKey = <client-private-key>
+DNS = 10.10.1.1
+
+[Peer]
+PublicKey = <server-public-key>
+Endpoint = <server-public-ip-address>:<port>
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = 192.168.1.94:51894
+```
+
+
+
+```
+arch-chroot/install_arm.sh
+arch-chroot/install_x64.sh
+```

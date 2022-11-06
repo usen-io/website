@@ -1,0 +1,12 @@
+
+
+
+
+
+``` shell
+# Find files created between a date range
+find -newerct "1 Aug 2013" ! -newerct "1 Sep 2013" -ls
+
+# Find recursive and change name from *.md to *.nog.md
+find . -type f -name "*.md" -exec rename -v .md .nog.md {} \;
+```

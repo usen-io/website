@@ -1,0 +1,50 @@
+
+#### recovering snapshot
+
+```shell
+mount /dev/vda4 /mnt
+
+rm -rf /mnt/root/*
+
+btrfs subvolume snapshot /mnt/root/.snapshots/1/snapshot /mnt/root/@
+
+mv /mnt/root/snapshot/* /mnt/root/
+
+rm -rf /mnt/root/snapshot
+```
+
+```
+[aa@neo-00 .config]$ cat qtile/startup.sh
+#!/bin/sh
+
+# check autostart-apps-list
+
+# APPLIST=$(cat ~/.config/qtile/start-apps)
+
+for i in read $APPLIST; do
+  ps auxw | grep -P '\b'$i'(?!-)\b'
+
+  if [ $? != 0 ]
+  then
+    $i &
+    echo "starting $i";
+  else
+    echo "noting to do!";
+  fi;
+done
+
+
+# Keyboard Layout
+# setxkbmap es &
+# setxkbmap en &
+
+#killall compton;
+#compton -b --config ~/.config/compton/compton.conf;
+
+killall picom;
+picom -b --config ~/.config/picom/picom.conf;
+
+# startup
+ulauncher &
+ulauncher-toggle &
+```

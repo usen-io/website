@@ -1,0 +1,120 @@
+
+
+## Local deploy
+
+### Getting requirements
+```shell
+
+### Install the Constellation CLI
+curl -LO https://github.com/edgelesssys/constellation/releases/latest/download/constellation-linux-amd64
+
+sudo install constellation-linux-amd64 /usr/local/bin/constellation
+
+### check if KVM kernel module is enabled
+LC_ALL=C lscpu | grep Virtualization
+zgrep CONFIG_KVM /proc/config.gz
+
+### install docker
+pacman -S --noconfirm docker --noconfirm
+systemctl enable --now docker
+
+### install xsltproc
+pacman -S --noconfirm libxslt --noconfirm
+
+### extra packages
+pacman -S qemu-guest-agent qemu-base htop libvirt kubectl git --noconfirm
+
+```
+
+### Enabling the network
+
+```shell
+### check iptables
+sudo iptables -S | grep -q -- '-P FORWARD DROP'
+
+# if not output then run again to get the state of forward
+sudo iptables -S
+-P INPUT ACCEPT
+-P FORWARD DROP
+-P OUTPUT ACCEPT
+-N DOCKER
+-N DOCKER-ISOLATION-STAGE-1
+-N DOCKER-ISOLATION-STAGE-2
+-N DOCKER-USER
+-A FORWARD -j DOCKER-USER
+-A FORWARD -j DOCKER-ISOLATION-STAGE-1
+-A FORWARD -o docker0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -o docker0 -j DOCKER
+-A FORWARD -i docker0 ! -o docker0 -j ACCEPT
+-A FORWARD -i docker0 -o docker0 -j ACCEPT
+-A DOCKER-ISOLATION-STAGE-1 -i docker0 ! -o docker0 -j DOCKER-ISOLATION-STAGE-2
+-A DOCKER-ISOLATION-STAGE-1 -j RETURN
+-A DOCKER-ISOLATION-STAGE-2 -o docker0 -j DROP
+-A DOCKER-ISOLATION-STAGE-2 -j RETURN
+-A DOCKER-USER -j RETURN
+
+
+### If your `FORWARD` chain is set to `DROP`, you need to update your rules:
+sudo iptables -P FORWARD ACCEPT
+
+# make permanent
+sudo /sbin/iptables-save > /etc/iptables/iptables.rules
+```
+
+### Create the cluster
+
+```shell
+constellation mini up &
+
+  WARNING: Only 4 CPU cores available. This may cause performance issues.
+  Downloading image to ./constellation.qcow2
+  Done.
+  
+  Creating cluster in QEMU
+  Cluster successfully created.
+  Connect to the VMs by executing:
+          virsh -c qemu+tcp://localhost:16599/system
+  
+  Using community license.
+  For details, see https://docs.edgeless.systems/constellation/overview/license
+  Your Constellation master secret was successfully written to ./constellation-mastersecret.json
+
+
+export KUBECONFIG="$PWD/constellation-admin.conf"
+alias k=kubectl
+
+
+constellation mini down
+```
+
+
+### Tweaks
+
+```shell
+# increase the memory on worker, at least 6GB
+mini-worker-0
+```
+
+
+### Metallb
+
+```
+```
+
+### Create boutique
+```shell
+# create ns
+kubectl create ns boutique
+
+# deploy store
+kubectl apply -n boutique -f https://github.com/GoogleCloudPlatform/microservices-demo/raw/main/release/kubernetes-manifests.yaml
+
+# waith until it's up and running
+kubectl wait --for=condition=available --timeout=300s -n boutique --all deployments
+
+# retrieve the public IP of the service
+kubectl get service frontend-external -n boutique | awk '{print $4}'
+
+kubectl -n boutique port-forward svc/frontend-external 80:80
+```
+

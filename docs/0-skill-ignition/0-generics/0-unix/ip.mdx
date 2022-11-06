@@ -1,0 +1,31 @@
+
+
+### setup inital ip and gateway
+```
+
+ip address add 192.168.33.6/24 dev enp1s0
+ip route add default via 192.168.33.1 dev enp1s0
+```
+
+
+``` shell
+# retrive just data of specif interface
+ip -h -4 addr show ens192
+
+# retrive just a lit of physical interfaces
+find /sys/class/net -type l -not -lname '*virtual*' -printf '%f\n' | xargs -I '{}'  ip -h -4 addr show {}
+
+## from: man find
+### -printf 
+#### %f     Print the basename; the file's name with any leading directories removed (only the last element).  For /, the result is `/'.  See the EXAMPLES section for an example.
+```
+
+
+
+```
+ 
+```
+
+
+
+

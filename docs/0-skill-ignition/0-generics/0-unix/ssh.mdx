@@ -1,0 +1,10 @@
+### ssh-keygen
+
+```
+ssh-keygen -t rsa -m PEM -b 4096 -C "rocky@crosskey"
+
+ssh-keygen -o -a 600 -t ed25519 -f ~/.ssh/id_rsa -C "rocky@crosskey"
+
+ssh-copy-id -i ~/.ssh/id_rsa.pub azureuser@myserver
+
+```

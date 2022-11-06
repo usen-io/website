@@ -1,0 +1,8 @@
+
+```
+firewall-cmd --permanent --zone=public --add-service=http
+firewall-cmd --permanent --zone=public --add-service=https
+firewall-cmd --zone=public --permanent --add-port=51820/udp
+firewall-cmd --reload
+```
+
